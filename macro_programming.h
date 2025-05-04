@@ -1,11 +1,6 @@
 #ifndef INC_MACRO_MAGIC_H
 #define INC_MACRO_MAGIC_H
 
-//compiler specific defines, change this when ported to another compiler
-#define auto __auto_type
-//unfortunately, Atollic IDE doesn't understand this one, interpretes it as variable and shows syntax error
-#define typeof __typeof__
-#define ALWAYS_INLINE __attribute__((always_inline)) inline
 /** defines a new type of given size */
 #define TYPE(SIZE)	struct{uint8_t _[SIZE];}
 

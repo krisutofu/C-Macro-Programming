@@ -74,7 +74,7 @@
 /** removes the outer parenthesis pair from the first argument.
  *  DISMANTLE does the same but can ignore arguments without
  *  outer pair. I know, this is not currying but the definition looks like a curried function call.
- *  This macro is only useful outside of macros. Inside macros you always can use I or a synonymous
+ *  This macro is mainly useful outside of macros. Inside macros you achieve the same with `I <variable>` or a synonymous
  *  macro with different name. */
 #define UNGROUP(...) _UNGROUPI __VA_ARGS__
 #define _UNGROUPI(...) __VA_ARGS__
@@ -99,11 +99,13 @@
 
 #define NAME_FORBIDDEN ,, //must not be found
 #define NAME_NOLAST , //must not be followed by comma, except if an empty argument is a valid name
-/**checks whether ARG starts with an allowed symbol and returns 1 iff true. You must specify any
- * allowed symbols by defining NAMESPACE ## _ ## S (no body) for each allowed symbol S. */
+/**checks whether ARG is #defined with a prefix NAMESPACE and returns 1 iff true. You must specify any
+ * allowed symbols by #defining a macro name `NAMESPACE ## _ ## S` (no body) for each allowed symbol S.
+ * e.g. we have `#define app_main` then `STARTSWITH(app, main)` expands to 1.*/
 #define STARTSWITH(NAMESPACE,...) _NOT(TAKE(CONC(NAMESPACE,_ ## __VA_ARGS__)))
-/**checks whether ARG starts without forbidden symbol. Retruns 1 iff true. Specify forbidden symbols S
- * as NAMESPACE ## _ ## S (no body). */
+/**checks whether ARG is not #defined with a forbidden prefix NAMESPACE. Returns 1 iff true. Specify forbidden symbols S
+ * as #define macro names `NAMESPACE ## _ ## S` (no body).
+ * e.g. if we have `#undef app_main` then `NOTSTARTSWITH(app, main)` expands to 1. */
 #define NOTSTARTSWITH(NAMESPACE,...) TAKE(CONC(NAMESPACE,_ ## __VA_ARGS__))
 /* you could do a lot more complex things with STARTSWITH by using WHILE() to check all words in one argument */
 
@@ -287,9 +289,9 @@
 })
 
 /** optmizes the code given after first argument with the optimization level given in the first argument.
- * You must give WHOLE top-level functions as code to optimize!
+ * You must provide WHOLE top-level function definitions with body for optimization!
  * @warning GCC WILL BEHAVE UNEXPECTEDLY IF YOU PLACE THIS MACRO IN ANOTHER MACRO!
- * 			ANY FUNCTION DEFINITION IN THE SAME MACRO EXPANSION AFTER IT WILL BE IGNORED!
+ *          ANY FUNCTION DEFINITION IN THE SAME MACRO EXPANSION AFTER IT WILL BE IGNORED!
  * */
 #define OPTIMIZE(OLEVEL)\
 	_Pragma("GCC push_options")\
